@@ -35,3 +35,8 @@ const tattoos = [
         description: "This is a butterfly tattoo- to see more work, keep scrolling on this site or find me on instagram @jowoods_ink"
       }, 
 ]
+
+module.exports = {
+  adminUsers,
+  tattoos,
+};
