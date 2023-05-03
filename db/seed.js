@@ -72,7 +72,7 @@ const createInitialUsers = async() => {
     }
 }
 
-//rebuild db
+//rebuild db function to test all of our functions!
 async function rebuildDB() {
     try {
         await dropTables();
