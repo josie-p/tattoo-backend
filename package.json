@@ -13,6 +13,7 @@
     "buffer-writer": "^2.0.0",
     "chokidar": "^3.5.3",
     "concat-map": "^0.0.1",
+    "cors": "^2.8.5",
     "debug": "^3.2.7",
     "express": "^4.18.2",
     "fill-range": "^7.0.1",
