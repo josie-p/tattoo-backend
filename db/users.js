@@ -9,11 +9,11 @@ const createUser = async({ username, password, isAdmin }) => {
         const { rows: [user] } = await client.query(`
         INSERT INTO users (username, password, "isAdmin")
         VALUES ($1, $2, $3)
-        ON CONFLICT (password) DO NOTHING
         RETURNING id, username, "isAdmin"; 
         `, [username, hashed_password, isAdmin]);
 
         console.log("finished creating user!!");
+        console.log(user, "user from createUser!");
         return user;
 
     } catch (error) {

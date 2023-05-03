@@ -1,7 +1,12 @@
 const client = require("./client");
 
 //import dummy data:
-const { adminUsers, tattoos } = require("./index");
+const { adminUsers, tattoos } = require("./data");
+
+//import functions:
+const {
+    createUser, 
+} = require("./index");
 
 //drop tables: 
 const dropTables = async() => {
@@ -51,19 +56,20 @@ const createTables = async() => {
     }
 }
 
-//create initial users:
-// const createInitialUsers = async() => {
-//     console.log("starting to create users!");
-//     try {
-        //create initial users!
-//         for(let i = 0; i < adminUsers.length; i++){
-//             await createUser(adminUsers[i]);
-//         }
-//     } catch (error) {
-//         console.error("error creating initial users!");
-//         throw error;
-//     }
-// }
+// create initial users:
+const createInitialUsers = async() => {
+    console.log("starting to create users!");
+    try {
+        // create initial users!
+        console.log(adminUsers, "adminUsers in seed");
+        for(let i = 0; i < adminUsers.length; i++){
+            await createUser(adminUsers[i]);
+        }
+    } catch (error) {
+        console.error("error creating initial users!");
+        throw error;
+    }
+}
 
 //rebuild db
 async function rebuildDB() {
@@ -71,7 +77,8 @@ async function rebuildDB() {
         await dropTables();
         await createTables();
         //initial functions:
-        
+        await createInitialUsers();
+
     } catch (error) {
         console.log("error rebuilding db!");
         throw error;
