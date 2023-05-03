@@ -6,6 +6,7 @@ const { adminUsers, tattoos } = require("./data");
 //import functions:
 const {
     createUser, 
+    getUser,
 } = require("./index");
 
 //drop tables: 
@@ -78,6 +79,9 @@ async function rebuildDB() {
         await createTables();
         //initial functions:
         await createInitialUsers();
+
+        //get user!
+        await getUser({ username: "josie-p", password: "SvNtH!!6712" })
 
     } catch (error) {
         console.log("error rebuilding db!");
