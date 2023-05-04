@@ -7,6 +7,10 @@ const { adminUsers, tattoos } = require("./data");
 const {
     createUser, 
     getUser,
+    updateUser,
+    deleteUser,
+    getUserById,
+    getAllUsers,
 } = require("./index");
 
 //drop tables: 
@@ -82,6 +86,18 @@ async function rebuildDB() {
 
         //get user!
         await getUser({ username: "josie-p", password: "SvNtH!!6712" })
+
+        await createUser({username: "sandra", password: "2Sandy4You", isAdmin: true});
+
+        await updateUser(3, {password: "Much2Sandy4U!!"});
+
+        // await getUserById(3);
+
+        await getUser({ username: "sandra", password: "Much2Sandy4U!!" });
+
+        // await deleteUser(3);
+        
+        await getAllUsers();
 
     } catch (error) {
         console.log("error rebuilding db!");
