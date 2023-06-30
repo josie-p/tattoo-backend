@@ -147,6 +147,8 @@ usersRouter.get("/all", async(req, res, next) => {
     }
 })
 
+//-- add a patch for personal profiles, not necessarily for editing other people's accounts
+
 //PATCH /api/users/edit-user
 //ref //PATCH user admin:
 // usersRouter.patch(
