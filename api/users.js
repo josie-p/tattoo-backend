@@ -2,9 +2,11 @@ const express = require("express");
 const jwt = require("jsonwebtoken");
 const usersRouter = express.Router();
 const bcrypt = require("bcrypt");
+const { requireAdmin } = require("./utils");
 const { createUser,
     getUserByUsername,
     getUser,
+    getAllUsers,
 
 
 } = require("../db");
@@ -126,6 +128,21 @@ usersRouter.post("/login", async (req, res, next) => {
             name: "login error",
             message: "something went wrong during login!",
          });
+    }
+})
+
+//GET /api/users/all
+usersRouter.get("/all", async(req, res, next) => {
+    try{
+
+        const allUsers = await getAllUsers();
+        res.send({ allUsers: allUsers, success: true });
+
+    }catch({ name, message }){
+        next({
+            name: "error getting all users",
+            message: "something happened while getting all users",
+        });
     }
 })
 
