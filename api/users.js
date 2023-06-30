@@ -15,7 +15,7 @@ const { createUser,
 usersRouter.post("/register", async(req, res, next) => {
     const { username, password } = req.body;
 
-    console.log("username and password from createuser post", req.body);
+    console.log("username and password from createuser post", username, password, req.body);
 
     //if there's no username or password, send error
     if(!username || !password){
@@ -25,11 +25,21 @@ usersRouter.post("/register", async(req, res, next) => {
             message: "Please supply both a username and a password",
         });
     }
+
+    // console.log(await getUserByUsername(username));
+
+    const _user = await getUserByUsername(username);
+    console.log("user from test on 32", _user);
     
     try {
 
+
         //send info into getUser func
-        const _user = await getUser({username: username, password: password})
+        // const _user = await getUserByUsername(username)
+
+        // console.log(_user, "user");
+
+        // console.log("do i get here!")
 
         //if a user is returned, then the user already exists; throw error
         if(_user){
