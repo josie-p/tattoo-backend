@@ -7,6 +7,7 @@ const { createUser,
     getUserByUsername,
     getUser,
     getAllUsers,
+    updateUser,
 
 
 } = require("../db");
@@ -131,7 +132,7 @@ usersRouter.post("/login", async (req, res, next) => {
     }
 })
 
-//GET /api/users/all
+//GET /api/users/all-- working!!
 usersRouter.get("/all", async(req, res, next) => {
     try{
 
@@ -145,6 +146,46 @@ usersRouter.get("/all", async(req, res, next) => {
         });
     }
 })
+
+//PATCH /api/users/edit-user
+//ref //PATCH user admin:
+// usersRouter.patch(
+//     "/admin/edit-user/:userId"
+usersRouter.patch("/edit-user", async(req, res, next) => {
+    const userId = req.user.id;
+    const { username, password } = req.body;
+    const SALT_COUNT = 10;
+    const hashedPassword = await bcrypt.hash(password, SALT_COUNT);
+    const fields = {}
+
+    if(username){
+        fields.username = username;
+    }
+    if(password){
+        fields.password = hashedPassword;
+    }
+
+    console.log(fields, "!!!");
+
+
+    try {
+        const user = await updateUser(userId, fields);
+
+        if(user){
+            res.send({
+                user: user,
+                success: true,
+            });
+        }
+        
+    } catch ({ name, message }) {
+        next({
+            name: "UserUpdateError",
+            message: "something happened while updating the user's information",
+        });
+    }
+})
+
 
 
 
