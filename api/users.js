@@ -9,9 +9,8 @@ const { createUser,
 
 } = require("../db");
 
-//POST IS BUGGING, BUT I'M STILL HITTING SOMETHING! COME BACK LATER
 
-//POST /api/users/register
+//POST /api/users/register-- route is working!
 usersRouter.post("/register", async(req, res, next) => {
     const { username, password } = req.body;
 
@@ -26,22 +25,14 @@ usersRouter.post("/register", async(req, res, next) => {
         });
     }
 
-    // console.log(await getUserByUsername(username));
-
-    const _user = await getUserByUsername(username);
-    console.log("user from test on 32", _user);
     
     try {
 
+        //send info into getUserByUsername func
+        const _user = await getUserByUsername(username);
 
-        //send info into getUser func
-        // const _user = await getUserByUsername(username)
 
-        // console.log(_user, "user");
-
-        // console.log("do i get here!")
-
-        //if a user is returned, then the user already exists; throw error
+        //if a user is returned, then the user already exists; throw error, also if password is too short
         if(_user){
             res.status(401);
             next({
@@ -54,6 +45,8 @@ usersRouter.post("/register", async(req, res, next) => {
                 message: "password too short",
             });
         }else{
+
+            //create user
             const user = await createUser({ username: username, password: password, isAdmin: true });
 
             if(!user){
@@ -79,6 +72,7 @@ usersRouter.post("/register", async(req, res, next) => {
         }
 
     } catch ({ name, message }) {
+        //if try fails, set status and send error
         res.status(400);
         next({
             name: "registration error",
@@ -87,6 +81,53 @@ usersRouter.post("/register", async(req, res, next) => {
     }
 
 });
+
+//POST /api/users/login-- route is working!!
+usersRouter.post("/login", async (req, res, next) => {
+
+    const { username, password } = req.body;
+
+    //if there's no username or password, send error
+    if(!username || !password){
+        res.status(401);
+
+        next({ 
+            name: "MissingCredentialsError",
+            message: "Please supply both a username and a password."
+         })
+
+    }
+
+    try {
+        //does the user exist?
+        const user = await getUserByUsername(username);
+
+        //is the password correct?
+        const isValid = await bcrypt.compare(password, user.password);
+
+        //if the user exists and the password is correct, get token for user and send data back; else, send error
+        if(user && isValid){
+            const token = jwt.sign({ id: user.id, username }, process.env.JWT_SECRET);
+
+            delete user.password;
+
+            res.send({ message: "you're logged in!", token, user, success: true });
+        }else{
+            res.status(401);
+            next({ 
+                name: "IncorrectCredentialsError",
+                message: "email or password is incorrect",
+             });
+        }       
+    } catch ({ name, message }) {
+        //if try errors, set status and send error message
+        res.status(400);
+        next({ 
+            name: "login error",
+            message: "something went wrong during login!",
+         });
+    }
+})
 
 
 
