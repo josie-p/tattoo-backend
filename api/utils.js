@@ -39,5 +39,6 @@ const requireJo = (req, res, next) => {
 
 module.exports = {
     requireUser,
-    requireAdmin
+    requireAdmin,
+    requireJo,
 }

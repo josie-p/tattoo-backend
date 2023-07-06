@@ -2,7 +2,7 @@ const express = require("express");
 const jwt = require("jsonwebtoken");
 const usersRouter = express.Router();
 const bcrypt = require("bcrypt");
-const { requireUser, requireAdmin } = require("./utils");
+const { requireUser, requireAdmin, requireJo } = require("./utils");
 const { createUser,
     getUserByUsername,
     getUser,
@@ -199,15 +199,38 @@ usersRouter.delete("/delete-me", requireUser, async(req, res, next) => {
 
     try {
         const deletedUser = await deleteUser(userId);
-        res.send({
-            deletedUser: deletedUser,
-            success: true
-        })
+        if(userId === deletedUser.id){
+            res.send({
+                deletedUser: deletedUser,
+                success: true
+            })
+        }else{
+            throw error;
+        }
+        
     } catch ({ name, message }) {
         next({
-            name: "ErrorDeletingUser",
-            message: "there was an error deleting the user",
+            name: "ErrorDeletingAccount",
+            message: "there was an error deleting your account",
         });
+    }
+})
+
+//delete other user's account
+usersRouter.delete("/delete-user/:userId", requireJo, async(req, res, next) => {
+    const userId = req.params.userId;
+    console.log(req.user, "req.user");
+    try {
+        const deletedUser = await deleteUser(userId);
+        res.send({
+            deletedUser: deletedUser,
+            success: true,
+        });
+    } catch ({ name, message }) {
+       next({
+        name: "ErrorDeletingUser",
+        message: "there was an error deleting the user",
+       });
     }
 })
 

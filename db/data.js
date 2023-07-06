@@ -38,5 +38,4 @@ const adminUsers = [
 
 module.exports = {
   adminUsers,
-  tattoos,
 };
