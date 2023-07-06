@@ -2,12 +2,13 @@ const express = require("express");
 const jwt = require("jsonwebtoken");
 const usersRouter = express.Router();
 const bcrypt = require("bcrypt");
-const { requireAdmin } = require("./utils");
+const { requireUser, requireAdmin } = require("./utils");
 const { createUser,
     getUserByUsername,
     getUser,
     getAllUsers,
     updateUser,
+    deleteUser,
 
 
 } = require("../db");
@@ -152,13 +153,16 @@ usersRouter.get("/all", async(req, res, next) => {
 //PATCH /api/users/edit-user
 //ref //PATCH user admin:
 // usersRouter.patch(
-//     "/admin/edit-user/:userId"
-usersRouter.patch("/edit-user", async(req, res, next) => {
+//     "/admin/edit-user/:userId" LINE 368
+usersRouter.patch("/edit-my-info", requireUser, async(req, res, next) => {
     const userId = req.user.id;
+    console.log(req.body);
     const { username, password } = req.body;
+    console.log(username, password, "username and password from body!");
+
     const SALT_COUNT = 10;
     const hashedPassword = await bcrypt.hash(password, SALT_COUNT);
-    const fields = {}
+    const fields = {};
 
     if(username){
         fields.username = username;
@@ -167,27 +171,45 @@ usersRouter.patch("/edit-user", async(req, res, next) => {
         fields.password = hashedPassword;
     }
 
-    console.log(fields, "!!!");
+    console.log(fields, "fields after edit!");
 
-
-    try {
+    try{
         const user = await updateUser(userId, fields);
 
         if(user){
             res.send({
                 user: user,
-                success: true,
+                success: true
             });
         }
-        
+
+    }catch({ name, message }){
+        next({
+            name: "ErrorUpdatingUser",
+            message: "error updating user info",
+        });
+    }
+
+})
+
+//delete my account route -- successful!
+usersRouter.delete("/delete-me", requireUser, async(req, res, next) => {
+    const userId = req.user.id;
+    console.log(req.user, "req user");
+
+    try {
+        const deletedUser = await deleteUser(userId);
+        res.send({
+            deletedUser: deletedUser,
+            success: true
+        })
     } catch ({ name, message }) {
         next({
-            name: "UserUpdateError",
-            message: "something happened while updating the user's information",
+            name: "ErrorDeletingUser",
+            message: "there was an error deleting the user",
         });
     }
 })
-
 
 
 
