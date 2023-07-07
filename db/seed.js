@@ -5,40 +5,39 @@ const { adminUsers, tattoos } = require("./data");
 
 //import functions:
 const {
-    createUser, 
-    getUser,
-    updateUser,
-    deleteUser,
-    getUserById,
-    getAllUsers,
+  createUser,
+  getUser,
+  updateUser,
+  deleteUser,
+  getUserById,
+  getAllUsers,
 } = require("./index");
 
-//drop tables: 
-const dropTables = async() => {
-    try{
-        //connect to client
-        client.connect();
-        console.log("dropping all tables!");
+//drop tables:
+const dropTables = async () => {
+  try {
+    //connect to client
+    client.connect();
+    console.log("dropping all tables!");
 
-        //drop tables:
-        await client.query(`
+    //drop tables:
+    await client.query(`
         DROP TABLE IF EXISTS users;
         DROP TABLE IF EXISTS products; 
         `);
 
-        console.log("finished dropping tables!");
-    }catch(error){
-        console.error("error dropping tables!");
-        throw error;
-    }
-}
+    console.log("finished dropping tables!");
+  } catch (error) {
+    console.error("error dropping tables!");
+    throw error;
+  }
+};
 
 //create tables:
-const createTables = async() => {
-    try {
-        
-        //create users and products table:
-        await client.query(`
+const createTables = async () => {
+  try {
+    //create users and products table:
+    await client.query(`
        CREATE TABLE users(
         id SERIAL PRIMARY KEY,
         username varchar(255) UNIQUE NOT NULL,
@@ -53,59 +52,61 @@ const createTables = async() => {
        );
         `);
 
-        console.log("finished creating tables!");
-
-    } catch (error) {
-        console.error("error building tables!");
-        throw error;
-    }
-}
+    console.log("finished creating tables!");
+  } catch (error) {
+    console.error("error building tables!");
+    throw error;
+  }
+};
 
 // create initial users:
-const createInitialUsers = async() => {
-    console.log("starting to create users!");
-    try {
-        // create initial users!
-        console.log(adminUsers, "adminUsers in seed");
-        for(let i = 0; i < adminUsers.length; i++){
-            await createUser(adminUsers[i]);
-        }
-    } catch (error) {
-        console.error("error creating initial users!");
-        throw error;
+const createInitialUsers = async () => {
+  console.log("starting to create users!");
+  try {
+    // create initial users!
+    console.log(adminUsers, "adminUsers in seed");
+    for (let i = 0; i < adminUsers.length; i++) {
+      await createUser(adminUsers[i]);
     }
-}
+  } catch (error) {
+    console.error("error creating initial users!");
+    throw error;
+  }
+};
 
 //rebuild db function to test all of our functions!
 async function rebuildDB() {
-    try {
-        await dropTables();
-        await createTables();
-        //initial functions:
-        await createInitialUsers();
+  try {
+    await dropTables();
+    await createTables();
+    //initial functions:
+    await createInitialUsers();
 
-        //get user!
-        await getUser({ username: "josie-p", password: "SvNtH!!6712" })
+    //get user!
+    await getUser({ username: "josie-p", password: "SvNtH!!6712" });
 
-        await createUser({username: "sandra", password: "2Sandy4You", isAdmin: true});
+    await createUser({
+      username: "sandra",
+      password: "2Sandy4You",
+      isAdmin: true,
+    });
 
-        // await updateUser(3, {password: "Much2Sandy4U!!"});
+    // await updateUser(3, {password: "Much2Sandy4U!!"});
 
-        // await getUserById(3);
+    // await getUserById(3);
 
-        await getUser({ username: "sandra", password: "Much2Sandy4U!!" });
+    await getUser({ username: "sandra", password: "Much2Sandy4U!!" });
 
-        // await deleteUser(3);
-        
-        await getAllUsers();
+    // await deleteUser(3);
 
-    } catch (error) {
-        console.log("error rebuilding db!");
-        throw error;
-    }
+    await getAllUsers();
+  } catch (error) {
+    console.log("error rebuilding db!");
+    throw error;
+  }
 }
 
 //run rebuild db:
 rebuildDB()
-    .catch(console.error)
-    .finally(() => client.end());
+  .catch(console.error)
+  .finally(() => client.end());
