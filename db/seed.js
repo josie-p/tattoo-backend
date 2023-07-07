@@ -89,7 +89,7 @@ async function rebuildDB() {
 
         await createUser({username: "sandra", password: "2Sandy4You", isAdmin: true});
 
-        await updateUser(3, {password: "Much2Sandy4U!!"});
+        // await updateUser(3, {password: "Much2Sandy4U!!"});
 
         // await getUserById(3);
 

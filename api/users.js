@@ -216,7 +216,7 @@ usersRouter.delete("/delete-me", requireUser, async(req, res, next) => {
     }
 })
 
-//delete other user's account
+//delete other user's account -- working!!
 usersRouter.delete("/delete-user/:userId", requireJo, async(req, res, next) => {
     const userId = req.params.userId;
     console.log(req.user, "req.user");
