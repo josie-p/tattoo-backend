@@ -1,4 +1,5 @@
 node_modules
 build
 .env
-seed.js
+seed.jsdb/seed.js
+db/data.js
