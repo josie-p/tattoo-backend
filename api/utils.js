@@ -27,7 +27,8 @@ const requireAdmin = (req, res, next) => {
 
 //requireJo func
 const requireJo = (req, res, next) => {
-  if (!req.user.id === 1) {
+  console.log(req.user.id, "user id in require jo")
+  if (req.user.id !== 1) {
     next({
       name: "Admin Error",
       message: "joann is the only user who can perform this action",
